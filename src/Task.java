@@ -21,8 +21,21 @@ public class Task implements Runnable {
           e.printStackTrace();
       }
 
+      boolean flagToAdd = true;
       ds.setLastPolledTime(new Date());
 
-      HeapAccess.access("ADD", heap, ds);
+      if(CommonStore.updateMap.containsKey(ds.getAsset())){
+          ds = CommonStore.updateMap.get(ds.getAsset());
+          CommonStore.updateMap.remove(ds.getAsset());
+      }
+
+      if(CommonStore.deleteMap.containsKey(ds.getAsset())){
+          CommonStore.deleteMap.remove(ds.getAsset());
+          flagToAdd = false;
+      }
+
+      if(flagToAdd) {
+          HeapAccess.access("ADD", heap, ds);
+      }
   }
 }

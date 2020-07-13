@@ -15,6 +15,14 @@ public class Poller {
             System.out.println("Inside poller true");
             DataAsset obj = (DataAsset) HeapAccess.access("RETRIEVE_MIN", heap, null);
             if(obj !=null) {
+                if(CommonStore.updateMap.containsKey(obj.getAsset())){
+                    obj = CommonStore.updateMap.get(obj.getAsset());
+                    CommonStore.updateMap.remove(obj.getAsset());
+                }
+                if(CommonStore.deleteMap.containsKey(obj.getAsset())){
+                    CommonStore.deleteMap.remove(obj.getAsset());
+                    continue;
+                }
                 Task t = new Task(obj, heap);
                 pool.execute(t);
             }else{
